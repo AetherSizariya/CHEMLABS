@@ -1,0 +1,109 @@
+      {/* Left Sidebar - Equipment & Chemicals */}
+      <div className={`bg-white border-r border-slate-200 flex flex-col z-10 shadow-lg transition-all duration-300 ease-in-out ${isSidebarOpen ? 'w-80 translate-x-0' : 'w-0 -translate-x-full absolute h-full'} overflow-hidden`}>
+        <div className="w-80 flex-1 flex flex-col h-full">
+        <div className="p-4 border-b border-slate-200 bg-slate-50 flex justify-between items-start whitespace-nowrap min-w-max">
+          <div>
+            <h1 className="text-xl font-bold flex items-center gap-2 text-indigo-700">
+              <FlaskConical className="text-indigo-600" /> Virtual ChemLab
+            </h1>
+            <p className="text-sm text-slate-500 mt-1">Interactive 3D simulations powered by AI.</p>
+          </div>
+          <button 
+            onClick={() => setIsSidebarOpen(false)}
+            className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-200 rounded-md transition-colors"
+            title="Collapse Sidebar"
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </button>
+        </div>
+
+        <div className="flex-1 overflow-y-auto">
+          {/* Equipments */}
+          <div className="p-4 border-b border-slate-200">
+            <div className="flex justify-between items-center mb-3">
+              <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500">Equipment Store</h2>
+            </div>
+            <div className="relative mb-3">
+              <Search className="w-3.5 h-3.5 absolute left-2.5 top-2 text-slate-400" />
+              <input 
+                type="text" 
+                placeholder="Search equipment..." 
+                value={equipmentSearch}
+                onChange={e => setEquipmentSearch(e.target.value)}
+                className="w-full pl-8 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-indigo-500"
+              />
+            </div>
+            <div className="flex flex-wrap gap-1 mb-3">
+               <button onClick={() => setEquipmentSearch('')} className={`px-2 py-1 text-[10px] rounded-md transition-colors ${equipmentSearch === '' ? 'bg-indigo-100 text-indigo-700' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}>All</button>
+               <button onClick={() => setEquipmentSearch('flask')} className={`px-2 py-1 text-[10px] rounded-md transition-colors flex items-center gap-1 ${equipmentSearch === 'flask' ? 'bg-indigo-100 text-indigo-700' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}><FlaskConical className="w-3 h-3"/> Flasks</button>
+               <button onClick={() => setEquipmentSearch('meter')} className={`px-2 py-1 text-[10px] rounded-md transition-colors flex items-center gap-1 ${equipmentSearch === 'meter' ? 'bg-indigo-100 text-indigo-700' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}><Thermometer className="w-3 h-3"/> Meters</button>
+               <button onClick={() => setEquipmentSearch('burner')} className={`px-2 py-1 text-[10px] rounded-md transition-colors flex items-center gap-1 ${equipmentSearch === 'burner' ? 'bg-indigo-100 text-indigo-700' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}><Flame className="w-3 h-3"/> Heat</button>
+               <button onClick={() => setEquipmentSearch('tube')} className={`px-2 py-1 text-[10px] rounded-md transition-colors flex items-center gap-1 ${equipmentSearch === 'tube' ? 'bg-indigo-100 text-indigo-700' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}><TestTube className="w-3 h-3"/> Tubes</button>
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              {(showAllEquipment ? EQUIPMENTS.filter(e => e.name.toLowerCase().includes(equipmentSearch.toLowerCase())) : EQUIPMENTS.filter(e => e.name.toLowerCase().includes(equipmentSearch.toLowerCase())).slice(0, 6)).map(equip => (
+                <button
+                  key={equip.id}
+                  onClick={() => addEquipmentToDesk(equip)}
+                  className="flex flex-col items-center justify-center p-2 rounded-xl bg-slate-50 hover:bg-indigo-50 border border-slate-200 hover:border-indigo-200 transition-colors text-xs text-center group"
+                >
+                  <Beaker className="w-6 h-6 mb-1 text-slate-400 group-hover:text-indigo-500" />
+                  <span className="truncate w-full">{equip.name}</span>
+                  <span className="text-[10px] text-slate-400">{equip.capacity > 0 ? `${equip.capacity}ml` : 'Apparatus'}</span>
+                </button>
+              ))}
+            </div>
+            {EQUIPMENTS.filter(e => e.name.toLowerCase().includes(equipmentSearch.toLowerCase())).length > 6 && (
+              <button 
+                onClick={() => setShowAllEquipment(!showAllEquipment)}
+                className="w-full mt-3 py-1.5 text-xs text-indigo-600 font-medium hover:bg-indigo-50 rounded-lg transition-colors"
+              >
+                {showAllEquipment ? 'Show Less' : 'Show More'}
+              </button>
+            )}
+          </div>
+
+          {/* Chemicals */}
+          <div className="p-4">
+            <div className="flex justify-between items-center mb-3">
+               <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500">Chemical Reagents</h2>
+               <div className="flex items-center gap-2">
+                 <span className="text-xs text-slate-500 font-medium">Pour:</span>
+                 <input 
+                   type="number" 
+                   value={pourAmount} 
+                   onChange={e => setPourAmount(Math.max(1, parseInt(e.target.value) || 1))}
+                   className="w-16 px-2 py-1 text-xs border border-slate-300 rounded focus:outline-none focus:border-indigo-500"
+                   min="1"
+                 />
+                 <span className="text-xs text-slate-500 font-medium">ml</span>
+               </div>
+            </div>
+            <div className="space-y-2">
+              {CHEMICALS.map(chem => (
+                <button
+                  key={chem.id}
+                  onClick={() => {
+                    setSelectedChemical(selectedChemical?.id === chem.id ? null : chem);
+                    setActiveItemId(null);
+                  }}
+                  className={`w-full flex items-center p-3 rounded-xl border transition-all ${
+                    selectedChemical?.id === chem.id 
+                      ? 'bg-indigo-600 border-indigo-700 text-white shadow-md' 
+                      : 'bg-white border-slate-200 hover:border-indigo-300 hover:bg-slate-50 text-slate-700'
+                  }`}
+                >
+                  <div className="w-4 h-4 rounded-full border border-black/10 mr-3" style={{ backgroundColor: chem.defaultColor }} />
+                  <div className="text-left flex-1">
+                    <div className="text-sm font-semibold">{chem.name}</div>
+                    <div className={`text-xs ${selectedChemical?.id === chem.id ? 'text-indigo-200' : 'text-slate-400'}`}>{chem.formula}</div>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+        </div>
+      {/* Main 3D/2D Viewport */}

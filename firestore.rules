@@ -1,0 +1,17 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /chemicals/{document} {
+      allow read, write: if true;
+    }
+    match /reactions/{document} {
+      allow read, write: if true;
+    }
+    match /chemical_generation_cache/{document} {
+      allow read, write: if true;
+    }
+    match /lab/{document} {
+      allow read, write: if true;
+    }
+  }
+}

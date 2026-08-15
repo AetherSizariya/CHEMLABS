@@ -1,0 +1,12 @@
+[build]
+  command = "vite build"
+  publish = "dist"
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+[dev]
+  command = "npm run dev"
+  targetPort = 3000
+  port = 8888
